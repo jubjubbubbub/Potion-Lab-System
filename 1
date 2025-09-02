@@ -1,0 +1,35 @@
+[System.Serializable]
+public class Ingredient {
+    public string name;
+    public Sprite icon;
+    public bool isCatalyst;
+}
+
+[System.Serializable]
+public class PotionRecipe {
+    public string potionName;
+    public List<string> requiredIngredients;
+    public MascotMood resultingMood;
+    public string bonusEffect;
+}
+
+public class PotionLab : MonoBehaviour {
+    public List<string> playerInventory;
+    public List<PotionRecipe> knownRecipes;
+
+    public bool CanCraft(PotionRecipe recipe) {
+        foreach (var ingredient in recipe.requiredIngredients) {
+            if (!playerInventory.Contains(ingredient)) return false;
+        }
+        return true;
+    }
+
+    public void CraftPotion(PotionRecipe recipe) {
+        if (CanCraft(recipe)) {
+            FindObjectOfType<MascotMoodManager>().currentMood = recipe.resultingMood;
+            Debug.Log("Crafted: " + recipe.potionName + " | Effect: " + recipe.bonusEffect);
+        } else {
+            Debug.Log("Missing ingredients for: " + recipe.potionName);
+        }
+    }
+}
